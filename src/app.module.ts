@@ -7,10 +7,12 @@ import { MONGO_DB_KEY } from './config'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UsersModule } from './users/users.module'
+import { TokenModule } from "./token/token.module"
 
 @Module({
   imports: [
     UsersModule,
+    TokenModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql'
     }),

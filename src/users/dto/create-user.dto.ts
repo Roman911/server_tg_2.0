@@ -1,15 +1,39 @@
-import { ObjectType, Field } from '@nestjs/graphql'
+import { ObjectType, Field, ID, Int } from '@nestjs/graphql'
+
+@ObjectType()
+class Socials {
+  @Field({ nullable: true })
+  facebook: string
+  @Field({ nullable: true })
+  instagram: string
+  @Field({ nullable: true })
+  twitter: string
+  @Field({ nullable: true })
+  youtube: string
+}
 
 @ObjectType()
 export class CreateUserDto {
+  @Field(() => ID)
+  _id: string
   @Field()
-  readonly name: string
+  name: string
   @Field()
-  readonly email: string
+  email: string
   @Field()
-  readonly password: string
+  password: string
   @Field()
-  readonly isActivated: boolean
+  isActivated: boolean
   @Field()
-  readonly activationLink: string
+  activationLink: string
+  @Field({ nullable: true })
+  avatar: string
+  @Field(type => Int, { nullable: true })
+  rating: number
+  @Field({ nullable: true })
+  aboutMy: string
+  @Field({ nullable: true })
+  socials: Socials
+  @Field({ nullable: true })
+  last_seen: Date
 }
