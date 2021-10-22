@@ -1,8 +1,8 @@
-import { ObjectType, Field } from '@nestjs/graphql'
+import { ObjectType, Field, ID } from '@nestjs/graphql'
 
 @ObjectType()
 export class CreateTokenDto {
-  @Field()
+  @Field(() => ID, { nullable: true })
   userId: string
 
   @Field()

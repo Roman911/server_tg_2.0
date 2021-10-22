@@ -8,9 +8,11 @@ import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from '../config'
 
 @Injectable()
 export class TokenService {
-  constructor(@InjectModel('Token') private tokenModel: Model<TokenDocument>) {}
+  constructor(
+    @InjectModel(Token.name) private tokenModel: Model<TokenDocument>
+  ) {}
 
-  generateTokens(payload) {
+  static generateTokens(payload: { name; id; isActivated; email }) {
     const accessToken = sign(payload, JWT_ACCESS_SECRET, { expiresIn: '30m' })
     const refreshToken = sign(payload, JWT_REFRESH_SECRET, { expiresIn: '30d' })
     return {
@@ -20,11 +22,12 @@ export class TokenService {
   }
 
   async saveToken(createTokenDto: TokenInput): Promise<Token> {
-    const tokenData = await this.tokenModel.findOne({ user: createTokenDto.userId })
-
-    console.log(tokenData, createTokenDto.userId)
-
-    const createdToken = await new this.tokenModel(createTokenDto)
-    return await createdToken.save()
+    const { userId, refreshToken } = await createTokenDto
+    const tokenData = await this.tokenModel.findOne({ user: userId })
+    if (tokenData) {
+      tokenData.refreshToken = refreshToken
+      return tokenData.save()
+    }
+    return await this.tokenModel.create({ user: userId, refreshToken })
   }
 }

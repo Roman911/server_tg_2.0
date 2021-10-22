@@ -1,35 +1,41 @@
 import { Model } from 'mongoose'
 import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import { ModuleRef } from "@nestjs/core"
 import { hash } from 'bcrypt'
 import { v4 } from 'uuid'
 import { User, UserDocument } from './users.schema'
 import { RegistrationUserInput } from "./inputs/registration-user.input"
+import { TokenService } from "../token/token.service"
+import { UserDto } from "./dto/user.dto"
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  private tokenService: TokenService
+  constructor(
+    private moduleRef: ModuleRef,
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>
+  ) {}
 
   async user(userID: string): Promise<User> {
-    try {
-      return this.userModel.findById(userID).exec()
-    } catch (e) {
-      console.log(e)
-    }
+    return this.userModel.findById(userID).exec()
   }
 
-  async registration(createUserDto: RegistrationUserInput): Promise<User> {
-    try {
-      const { email, name, password } = await createUserDto
-      const candidate = await this.userModel.findOne({ email })
-      if (candidate) throw new BadRequestException(`Користувач з таким емейлом вже зареестрований`)
-      const hashPassword = await hash(password, 10)
-      const activationLink = v4()
-      const registrationUser = await new this.userModel({ email, name, password: hashPassword })
-      return await registrationUser.save()
-    } catch (e) {
-      console.log(e)
-    }
+  async registration(createUserDto: RegistrationUserInput): Promise<any> {
+    const { email, name, password } = await createUserDto
+    const candidate = await this.userModel.findOne({ email })
+    if (candidate) throw new BadRequestException(`Користувач з таким емейлом вже зареестрований`)
+    const hashPassword = await hash(password, 10)
+    const activationLink = v4()
+    const user = await this.userModel.create({ email, name, password: hashPassword, activationLink })
+    //mailService
+    const userDto = new UserDto(user)
+    const tokens = TokenService.generateTokens({ ...userDto })
+    this.tokenService = await this.moduleRef.get(TokenService, { strict: false })
+    await this.tokenService.saveToken({userId: userDto.id, refreshToken: tokens.refreshToken})
+
+    return { ...tokens, user: userDto }
   }
 
   // async login(): Promise<User> {

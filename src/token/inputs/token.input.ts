@@ -1,8 +1,8 @@
-import { InputType, Field } from '@nestjs/graphql'
+import {InputType, Field, ID} from '@nestjs/graphql'
 
 @InputType()
 export class TokenInput {
-  @Field()
+  @Field(() => ID)
   userId: string
   @Field()
   refreshToken: string
