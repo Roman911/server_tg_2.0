@@ -28,7 +28,7 @@ export class CreateUserDto {
   activationLink: string
   @Field({ nullable: true })
   avatar: string
-  @Field(type => Int, { nullable: true })
+  @Field(() => Int, { nullable: true })
   rating: number
   @Field({ nullable: true })
   aboutMy: string
@@ -36,4 +36,14 @@ export class CreateUserDto {
   socials: Socials
   @Field({ nullable: true })
   last_seen: Date
+}
+
+@ObjectType()
+export class CreateUserDataDto {
+  @Field()
+  user: CreateUserDto
+  @Field()
+  accessToken: string
+  @Field()
+  refreshToken: string
 }

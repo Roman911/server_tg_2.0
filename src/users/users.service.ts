@@ -12,6 +12,7 @@ import { UserDto } from "./dto/user.dto"
 @Injectable()
 export class UsersService {
   private tokenService: TokenService
+  //private mailService: MailService
   constructor(
     private moduleRef: ModuleRef,
     @InjectModel(User.name)
@@ -29,7 +30,8 @@ export class UsersService {
     const hashPassword = await hash(password, 10)
     const activationLink = v4()
     const user = await this.userModel.create({ email, name, password: hashPassword, activationLink })
-    //mailService
+    //this.mailService = await this.moduleRef.get(MailService, { strict: false })
+    //await this.mailService.sendActivationMail(email, `${API_URL}/activate/${activationLink}`)
     const userDto = new UserDto(user)
     const tokens = TokenService.generateTokens({ ...userDto })
     this.tokenService = await this.moduleRef.get(TokenService, { strict: false })
