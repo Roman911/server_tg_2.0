@@ -14,8 +14,6 @@ class Socials {
 
 @ObjectType()
 export class CreateUserDto {
-  @Field(() => ID)
-  _id: string
   @Field()
   name: string
   @Field()
@@ -46,4 +44,10 @@ export class CreateUserDataDto {
   accessToken: string
   @Field()
   refreshToken: string
+}
+
+@ObjectType()
+export class ActivateUserDto {
+  @Field(() => ID)
+  _id: string
 }

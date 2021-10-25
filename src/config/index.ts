@@ -11,7 +11,8 @@ const {
   SMTP_PORT,
   SMTP_USER,
   SMTP_PASSWORD,
-  API_URL
+  API_URL,
+  CLIENT_URL
 } = parsed
 
 export {
@@ -24,5 +25,6 @@ export {
   SMTP_PORT,
   SMTP_USER,
   SMTP_PASSWORD,
-  API_URL
+  API_URL,
+  CLIENT_URL
 }

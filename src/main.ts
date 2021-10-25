@@ -4,7 +4,7 @@ import { PORT } from './config'
 
 const start = async () => {
     try {
-      const app = await NestFactory.create(AppModule)
+      const app = await NestFactory.create(AppModule, { cors: true })
 
       await app.listen(PORT || 5000, () => console.log(`server started on PORT ${PORT}`))
     } catch (e) {

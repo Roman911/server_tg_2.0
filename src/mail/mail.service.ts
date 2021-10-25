@@ -1,8 +1,10 @@
+import { Injectable } from '@nestjs/common'
 import { createTransport } from 'nodemailer'
 import { SMTP_HOST, SMTP_PASSWORD, SMTP_PORT, SMTP_USER, API_URL } from '../config'
 
+@Injectable()
 export class MailService {
-  transporter
+  private transporter: any
   constructor() {
     this.transporter = createTransport({
       host: SMTP_HOST,
@@ -15,7 +17,7 @@ export class MailService {
     })
   }
 
-  async sendActivationMail(to, link): Promise<any> {
+  async sendActivationMail(to, link) {
     await this.transporter.sendMail({
       from: SMTP_USER,
       to,

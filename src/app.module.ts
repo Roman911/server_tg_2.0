@@ -6,11 +6,13 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UsersModule } from './users/users.module'
 import { TokenModule } from "./token/token.module"
+import { MailModule } from './mail/mail.module'
 
 @Module({
   imports: [
     UsersModule,
     TokenModule,
+    MailModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql'
     }),
