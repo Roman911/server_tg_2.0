@@ -9,7 +9,6 @@ import { RegistrationUserInput } from "./inputs/registration-user.input"
 import { LoginUserInput } from './inputs/login-user.input'
 import { TokenService } from "../token/token.service"
 import { MailService } from "../mail/mail.service"
-import { UserDto } from "./dto/user.dto"
 import { UserTokenService } from "./user-token.service"
 import { CLIENT_URL } from "../config"
 
@@ -30,17 +29,19 @@ export class UsersService {
 
   async activate(activationLink): Promise<any> {
     const user = await this.userModel.findOne({ activationLink })
-    const userDto = new UserDto(user)
     if (!user) throw new BadRequestException(`Некоректний лінк активації`)
     user.isActivated = true
     await user.save()
-    return { ...userDto }
+    this.userTokenService = await this.moduleRef.get(UserTokenService, { strict: false })
+
+    return await this.userTokenService.userTokenData(user)
   }
 
   async login(createUserDto: LoginUserInput): Promise<any> {
     const { email, password } = createUserDto
     const user = await this.userModel.findOne({ email })
     if (!user) throw new BadRequestException('Неправильний логін або пароль')
+    if (!user.isActivated) throw new BadRequestException('Потрібно активувати акаунт')
     const isPassEquals = await compare(password, user.password)
     if (!isPassEquals) throw new BadRequestException('Неправильний логін або пароль')
     this.userTokenService = await this.moduleRef.get(UserTokenService, { strict: false })

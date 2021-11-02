@@ -27,7 +27,7 @@ export class UsersResolver {
     return this.usersService.user(userID)
   }
 
-  @Query(() => CreateUserDto)
+  @Query(() => CreateUserDataDto)
   async activate(@Args('activationLink') activationLink: string) {
     return await this.usersService.activate(activationLink)
   }
