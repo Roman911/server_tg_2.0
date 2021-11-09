@@ -8,7 +8,7 @@ export class MailService {
   constructor() {
     this.transporter = createTransport({
       host: SMTP_HOST,
-      port: SMTP_PORT,
+      port: +SMTP_PORT,
       secure: false,
       auth: {
         user: SMTP_USER,
